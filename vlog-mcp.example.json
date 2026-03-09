@@ -1,0 +1,35 @@
+{
+  "_comment": "VlogMCP — main config file. Copy to vlog-mcp.json and fill in your values.",
+
+  "workspace":    "./vlog-workspace",
+  "branding_path": "./branding/branding.json",
+  "library_path":  "./library/index.json",
+
+  "openai": {
+    "api_key":  "sk-...",
+    "base_url": ""
+  },
+
+  "elevenlabs": {
+    "api_key": ""
+  },
+
+  "stability": {
+    "api_key": ""
+  },
+
+  "video_gen": {
+    "runway_api_key": "",
+    "luma_api_key":   "",
+    "kling_api_key":  ""
+  },
+
+  "music_gen": {
+    "replicate_api_key": ""
+  },
+
+  "telegram": {
+    "bot_token": "",
+    "chat_id":   ""
+  }
+}

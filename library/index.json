@@ -1,0 +1,319 @@
+{
+  "_comment": "VlogMCP Media Library Index. duration is auto-detected from the file if omitted. bpm is optional.",
+  "_version": "1.1",
+
+  "memes": [
+    {
+      "id":          "meme_this_is_fine",
+      "path":        "memes/this_is_fine.png",
+      "kind":        "image",
+      "tags":        ["огонь", "всё нормально", "паника", "баг", "продакшн"],
+      "description": "Собака сидит в горящем доме — 'всё нормально'. Для ситуаций с багами в продакшне."
+    },
+    {
+      "id":          "meme_thanos_snap",
+      "path":        "memes/thanos_snap.png",
+      "kind":        "image",
+      "tags":        ["удалил", "очистил", "снап", "деплой", "удаление"],
+      "description": "Танос щёлкает пальцами — для моментов удаления/очистки данных или зависимостей."
+    },
+    {
+      "id":          "meme_galaxy_brain",
+      "path":        "memes/galaxy_brain.png",
+      "kind":        "image",
+      "tags":        ["умная мысль", "инсайт", "решение", "мозг", "идея"],
+      "description": "Galaxy brain — когда находишь неочевидное гениальное решение."
+    },
+    {
+      "id":          "meme_surprised_pikachu",
+      "path":        "memes/surprised_pikachu.png",
+      "kind":        "image",
+      "tags":        ["удивление", "неожиданно", "баг", "ошибка"],
+      "description": "Удивлённый Пикачу — для неожиданных ошибок или результатов."
+    },
+    {
+      "id":          "meme_two_buttons",
+      "path":        "memes/two_buttons.png",
+      "kind":        "image",
+      "tags":        ["выбор", "дилемма", "решение", "кнопки"],
+      "description": "Человек в поту выбирает между двумя кнопками — для сложных архитектурных решений."
+    },
+    {
+      "id":          "meme_distracted_boyfriend",
+      "path":        "memes/distracted_boyfriend.png",
+      "kind":        "image",
+      "tags":        ["новая технология", "переход", "интерес", "фреймворк"],
+      "description": "Отвлечённый парень — смотрит на новую технологию, игнорируя старую."
+    },
+    {
+      "id":          "meme_chad_vs_virgin",
+      "path":        "memes/chad_vs_virgin.png",
+      "kind":        "image",
+      "tags":        ["сравнение", "chad", "плохо хорошо", "подход"],
+      "description": "Virgin vs Chad — для сравнения плохого и хорошего подхода."
+    },
+    {
+      "id":          "meme_ancient_aliens",
+      "path":        "memes/ancient_aliens.png",
+      "kind":        "image",
+      "tags":        ["магия", "непонятно", "объяснение", "алиены"],
+      "description": "Мужчина с руками вверх — 'это просто магия'. Для труднообъяснимого кода."
+    },
+    {
+      "id":          "meme_typing_speed",
+      "path":        "memes/typing_speed.png",
+      "kind":        "image",
+      "tags":        ["скорость", "набор", "кодинг", "бурная активность"],
+      "description": "Персонаж бешено печатает — для демонстрации интенсивной работы."
+    },
+    {
+      "id":          "meme_works_on_my_machine",
+      "path":        "memes/works_on_my_machine.png",
+      "kind":        "image",
+      "tags":        ["окружение", "works on my machine", "локально", "prod"],
+      "description": "Works on my machine — классика при различиях между local и production."
+    }
+  ],
+
+  "sfx": [
+    {
+      "id":          "sfx_success",
+      "path":        "sfx/success.mp3",
+      "kind":        "audio",
+      "tags":        ["успех", "готово", "win", "завершено"],
+      "description": "Короткий позитивный звук — тест прошёл, деплой успешен."
+    },
+    {
+      "id":          "sfx_fail",
+      "path":        "sfx/fail.mp3",
+      "kind":        "audio",
+      "tags":        ["ошибка", "fail", "упал", "баг"],
+      "description": "Звук провала — красный тест, падение сервера."
+    },
+    {
+      "id":          "sfx_error_beep",
+      "path":        "sfx/error_beep.mp3",
+      "kind":        "audio",
+      "tags":        ["бип", "ошибка", "алерт"],
+      "description": "Резкий бип — короткий сигнал ошибки или предупреждения."
+    },
+    {
+      "id":          "sfx_coin",
+      "path":        "sfx/coin.mp3",
+      "kind":        "audio",
+      "tags":        ["монета", "достижение", "награда", "unlock"],
+      "description": "Звук монеты — достижение разблокировано, milestone выполнен."
+    },
+    {
+      "id":          "sfx_whoosh",
+      "path":        "sfx/whoosh.mp3",
+      "kind":        "audio",
+      "tags":        ["переход", "свуш", "быстро", "смена"],
+      "description": "Whoosh — звуковое сопровождение быстрого перехода или смены слайда."
+    },
+    {
+      "id":          "sfx_keyboard",
+      "path":        "sfx/keyboard.mp3",
+      "kind":        "audio",
+      "tags":        ["клавиатура", "печать", "кодинг", "набор"],
+      "description": "Звук механической клавиатуры — для сцен активного кодинга."
+    },
+    {
+      "id":          "sfx_notification",
+      "path":        "sfx/notification.mp3",
+      "kind":        "audio",
+      "tags":        ["уведомление", "пинг", "сообщение"],
+      "description": "Звук уведомления — пришёл алерт, сообщение, webhook."
+    },
+    {
+      "id":          "sfx_explosion",
+      "path":        "sfx/explosion.mp3",
+      "kind":        "audio",
+      "tags":        ["взрыв", "катастрофа", "крэш", "production down"],
+      "description": "Взрыв — падение продакшна, критическая ошибка."
+    },
+    {
+      "id":          "sfx_drum_roll",
+      "path":        "sfx/drum_roll.mp3",
+      "kind":        "audio",
+      "tags":        ["барабан", "драматично", "анонс", "ожидание"],
+      "description": "Барабанная дробь — предвкушение результата, анонс фичи."
+    },
+    {
+      "id":          "sfx_applause",
+      "path":        "sfx/applause.mp3",
+      "kind":        "audio",
+      "tags":        ["аплодисменты", "победа", "отлично", "успех"],
+      "description": "Аплодисменты — всё получилось, релиз вышел."
+    }
+  ],
+
+  "stickers": [
+    {
+      "id":          "stk_loading",
+      "path":        "stickers/loading.gif",
+      "kind":        "gif",
+      "tags":        ["загрузка", "ожидание", "спиннер", "processing"],
+      "description": "Анимированный спиннер загрузки."
+    },
+    {
+      "id":          "stk_fire",
+      "path":        "stickers/fire.gif",
+      "kind":        "gif",
+      "tags":        ["огонь", "горит", "хот", "trending"],
+      "description": "Анимированный огонь — горячая новость или горящий дедлайн."
+    },
+    {
+      "id":          "stk_checkmark",
+      "path":        "stickers/checkmark.gif",
+      "kind":        "gif",
+      "tags":        ["галочка", "готово", "done", "ok", "успех"],
+      "description": "Анимированная галочка — задача выполнена."
+    },
+    {
+      "id":          "stk_thinking",
+      "path":        "stickers/thinking.gif",
+      "kind":        "gif",
+      "tags":        ["думаю", "размышление", "анализ", "hmm"],
+      "description": "Анимация размышления — анализируем проблему."
+    },
+    {
+      "id":          "stk_rocket",
+      "path":        "stickers/rocket.gif",
+      "kind":        "gif",
+      "tags":        ["ракета", "запуск", "релиз", "деплой", "старт"],
+      "description": "Ракета взлетает — деплой в продакшн, запуск фичи."
+    },
+    {
+      "id":          "stk_bug",
+      "path":        "stickers/bug.gif",
+      "kind":        "gif",
+      "tags":        ["баг", "жук", "ошибка", "bug"],
+      "description": "Анимированный жук — обнаружили баг."
+    },
+    {
+      "id":          "stk_thumbs_up",
+      "path":        "stickers/thumbs_up.gif",
+      "kind":        "gif",
+      "tags":        ["лайк", "одобрение", "хорошо", "great"],
+      "description": "Анимированный палец вверх — одобрение, всё ок."
+    },
+    {
+      "id":          "stk_coffee",
+      "path":        "stickers/coffee.gif",
+      "kind":        "gif",
+      "tags":        ["кофе", "пауза", "перерыв", "заряжаюсь"],
+      "description": "Дымящийся кофе — перерыв, зарядка энергией."
+    }
+  ],
+
+  "cutaways": [
+    {
+      "id":          "cut_terminal_run",
+      "path":        "cutaways/terminal_run.mp4",
+      "kind":        "video",
+      "tags":        ["терминал", "команды", "запуск", "shell"],
+      "description": "Команды летят в терминале — фоновый клип для разделов с CLI."
+    },
+    {
+      "id":          "cut_code_scroll",
+      "path":        "cutaways/code_scroll.mp4",
+      "kind":        "video",
+      "tags":        ["код", "скролл", "просмотр", "review"],
+      "description": "Медленно прокручивается код — для сцен code review."
+    },
+    {
+      "id":          "cut_git_log",
+      "path":        "cutaways/git_log.mp4",
+      "kind":        "video",
+      "tags":        ["git", "история", "коммиты", "log"],
+      "description": "git log с историей коммитов — для git-разделов."
+    },
+    {
+      "id":          "cut_dashboard",
+      "path":        "cutaways/dashboard.mp4",
+      "kind":        "video",
+      "tags":        ["дашборд", "метрики", "графики", "мониторинг"],
+      "description": "Мониторинг-дашборд с графиками — для разделов с метриками."
+    },
+    {
+      "id":          "cut_thinking_pause",
+      "path":        "cutaways/thinking_pause.mp4",
+      "kind":        "video",
+      "tags":        ["пауза", "думаю", "размышление", "переход"],
+      "description": "Нейтральная пауза для смены смыслового блока."
+    },
+    {
+      "id":          "cut_browser_inspect",
+      "path":        "cutaways/browser_inspect.mp4",
+      "kind":        "video",
+      "tags":        ["браузер", "devtools", "инспектор", "отладка", "frontend"],
+      "description": "DevTools браузера — для frontend-разделов и отладки."
+    },
+    {
+      "id":          "cut_docker_ps",
+      "path":        "cutaways/docker_ps.mp4",
+      "kind":        "video",
+      "tags":        ["docker", "контейнеры", "ps", "инфра"],
+      "description": "docker ps — список запущенных контейнеров."
+    },
+    {
+      "id":          "cut_test_run",
+      "path":        "cutaways/test_run.mp4",
+      "kind":        "video",
+      "tags":        ["тесты", "тестирование", "pytest", "jest", "ci"],
+      "description": "Запуск тестов — зелёные/красные результаты."
+    }
+  ],
+
+  "music": [
+    {
+      "id":          "mus_lofi_focus",
+      "path":        "music/lofi_focus.mp3",
+      "kind":        "audio",
+      "mood":        "focused",
+      "tags":        ["лофи", "фон", "спокойная", "работа", "кодинг"],
+      "description": "Lo-fi hip-hop — спокойный фоновый трек для разделов кодинга."
+    },
+    {
+      "id":          "mus_upbeat_intro",
+      "path":        "music/upbeat_intro.mp3",
+      "kind":        "audio",
+      "mood":        "energetic",
+      "tags":        ["энергичная", "интро", "старт", "бодрая"],
+      "description": "Бодрый трек для intro-секции или начала демо."
+    },
+    {
+      "id":          "mus_cinematic_build",
+      "path":        "music/cinematic_build.mp3",
+      "kind":        "audio",
+      "mood":        "dramatic",
+      "tags":        ["кинематографичная", "нагнетание", "драма", "деплой"],
+      "description": "Нарастающая кинематографичная музыка — для кульминационных моментов."
+    },
+    {
+      "id":          "mus_corporate_bg",
+      "path":        "music/corporate_bg.mp3",
+      "kind":        "audio",
+      "mood":        "professional",
+      "tags":        ["корпоративная", "нейтральная", "фон", "презентация"],
+      "description": "Нейтральный корпоративный фон — для презентационных разделов."
+    },
+    {
+      "id":          "mus_outro_calm",
+      "path":        "music/outro_calm.mp3",
+      "kind":        "audio",
+      "mood":        "calm",
+      "tags":        ["аутро", "спокойная", "завершение", "конец"],
+      "description": "Спокойный трек для outro — завершение видео."
+    },
+    {
+      "id":          "mus_hacking_techno",
+      "path":        "music/hacking_techno.mp3",
+      "kind":        "audio",
+      "mood":        "intense",
+      "tags":        ["техно", "хакинг", "интенсивно", "быстро", "экшн"],
+      "description": "Техно-трек — для динамичных технических демо."
+    }
+  ]
+}
