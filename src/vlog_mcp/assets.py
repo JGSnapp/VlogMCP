@@ -107,15 +107,46 @@ def _hex_to_rgb(h: str) -> tuple[int, int, int]:
     return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))  # type: ignore
 
 
+def _parse_highlight_lines(
+    highlight_lines: "list[int | dict] | None",
+) -> "dict[int, dict]":
+    """
+    Normalise highlight_lines into {line_no: {bg, fg}} mapping.
+
+    Accepts:
+      - List[int]          → each int gets default bg=#3D3D2E
+      - List[int | dict]   → dict must have 'line'; optional 'bg' and 'fg' keys
+    """
+    result: dict[int, dict] = {}
+    for item in (highlight_lines or []):
+        if isinstance(item, int):
+            result[item] = {"bg": "#3D3D2E", "fg": None}
+        elif isinstance(item, dict):
+            line_no = int(item.get("line", 0))
+            if line_no:
+                result[line_no] = {
+                    "bg": item.get("bg", "#3D3D2E"),
+                    "fg": item.get("fg"),
+                }
+    return result
+
+
 def code_snapshot(
     output_path: Path,
     code: str,
     lang: str = "python",
-    highlight_lines: list[int] | None = None,
+    highlight_lines: "list[int | dict] | None" = None,
     width: int = 1920,
     height: int = 1080,
 ) -> Path:
-    """Render syntax-highlighted code to a PNG using Pillow + Pygments."""
+    """
+    Render syntax-highlighted code to a PNG using Pillow + Pygments.
+
+    highlight_lines accepts:
+      - List[int]   — highlight those line numbers with default yellow-tint bg
+      - List[dict]  — each dict: {"line": N, "bg": "#hexcolor", "fg": "#hexcolor"}
+                      'fg' overrides the text color for that entire line.
+    """
     from PIL import Image, ImageDraw
     from pygments import lex
     from pygments.lexers import get_lexer_by_name, TextLexer
@@ -133,24 +164,25 @@ def code_snapshot(
     line_num_width = 60
 
     lines = code.split("\n")
-    highlight_lines = set(highlight_lines or [])
+    hl_map = _parse_highlight_lines(highlight_lines)
 
     img = Image.new("RGB", (width, height), _MONOKAI["background"])
     draw = ImageDraw.Draw(img)
 
     y = padding
     for line_no, line in enumerate(lines, start=1):
+        hl = hl_map.get(line_no)
         # Highlight background for marked lines
-        if line_no in highlight_lines:
-            draw.rectangle([0, y - 2, width, y + line_height], fill="#3D3D2E")
+        if hl:
+            draw.rectangle([0, y - 2, width, y + line_height], fill=hl["bg"])
 
         # Draw line number
         draw.text((padding, y), f"{line_no:>4}", fill=_MONOKAI["line_num"], font=font)
 
-        # Tokenise and draw code
+        # Tokenise and draw code (hl fg overrides per-token syntax color)
         x = padding + line_num_width
         for ttype, value in lex(line, lexer):
-            color = _token_color(ttype)
+            color = hl["fg"] if (hl and hl.get("fg")) else _token_color(ttype)
             draw.text((x, y), value, fill=color, font=font)
             try:
                 bbox = draw.textbbox((x, y), value, font=font)
@@ -163,6 +195,134 @@ def code_snapshot(
             break
 
     img.save(str(output_path), "PNG")
+    return output_path
+
+
+# ─── code typewriter ──────────────────────────────────────────────────────────
+
+def code_typewriter(
+    output_path: Path,
+    code: str,
+    lang: str = "python",
+    chars_per_second: float = 30.0,
+    cursor: bool = True,
+    fps: int = 30,
+    width: int = 1920,
+    height: int = 1080,
+) -> Path:
+    """
+    Render a typewriter-effect code video to MP4.
+
+    The video shows the code being typed character by character.
+    Each frame reveals one or more additional characters depending on
+    chars_per_second vs fps.  A blinking block cursor can be enabled.
+
+    Returns path to the output .mp4 file.
+    """
+    import subprocess
+    import tempfile
+    from PIL import Image, ImageDraw
+    from pygments import lex
+    from pygments.lexers import get_lexer_by_name, TextLexer
+    from pygments.util import ClassNotFound
+
+    try:
+        lexer = get_lexer_by_name(lang, stripall=True)
+    except ClassNotFound:
+        lexer = TextLexer()
+
+    font_size = 22
+    font = _load_font(font_size, mono=True)
+    line_height = font_size + 6
+    padding = 40
+    line_num_width = 60
+    bg_color = _MONOKAI["background"]
+
+    # ── frame schedule ───────────────────────────────────────────────────────
+    total_chars = len(code)
+    # How many characters are revealed per frame
+    chars_per_frame = max(1, chars_per_second / fps)
+    # Total number of frames to generate
+    total_frames = max(1, int(total_chars / chars_per_frame) + fps)  # +fps pause at end
+
+    def _render_frame(visible: int, show_cursor: bool) -> Image.Image:
+        """Render the code up to `visible` characters as a PIL Image."""
+        snippet = code[:visible]
+        img = Image.new("RGB", (width, height), bg_color)
+        draw = ImageDraw.Draw(img)
+
+        lines = snippet.split("\n")
+        y = padding
+        for line_no, line in enumerate(lines, start=1):
+            # line number
+            draw.text((padding, y), f"{line_no:>4}", fill=_MONOKAI["line_num"], font=font)
+            # syntax-highlighted tokens
+            x = padding + line_num_width
+            # Only tokenise the last (incomplete) line for speed; full lines reuse
+            for ttype, value in lex(line, lexer):
+                color = _token_color(ttype)
+                draw.text((x, y), value, fill=color, font=font)
+                try:
+                    bbox = draw.textbbox((x, y), value, font=font)
+                    x += bbox[2] - bbox[0]
+                except AttributeError:
+                    x += len(value) * (font_size // 2)
+            # cursor on the current (last) line
+            if show_cursor and line_no == len(lines):
+                draw.rectangle([x, y, x + 12, y + font_size], fill="#F8F8F2")
+            y += line_height
+            if y > height - padding:
+                break
+        return img
+
+    # ── generate unique frames → temp dir ────────────────────────────────────
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        tmp = Path(tmp_dir)
+        frame_paths: list[tuple[Path, int]] = []  # (png_path, repeat_count)
+
+        prev_key: tuple | None = None
+        for frame_idx in range(total_frames):
+            visible = min(total_chars, int(frame_idx * chars_per_frame))
+            # Cursor blinks at ~2 Hz: on for first half of each second, off for second half
+            show_cursor = cursor and (frame_idx % fps < fps // 2)
+            frame_key = (visible, show_cursor)
+
+            if frame_key != prev_key:
+                png_path = tmp / f"frame_{frame_idx:06d}.png"
+                img = _render_frame(visible, show_cursor)
+                img.save(str(png_path), "PNG")
+                frame_paths.append((png_path, 1))
+                prev_key = frame_key
+            else:
+                frame_paths[-1] = (frame_paths[-1][0], frame_paths[-1][1] + 1)
+
+        # ── build concat demuxer file ─────────────────────────────────────
+        concat_txt = tmp / "frames.txt"
+        with concat_txt.open("w") as f:
+            for png_path, repeat in frame_paths:
+                duration = repeat / fps
+                f.write(f"file '{png_path}'\n")
+                f.write(f"duration {duration:.6f}\n")
+            # ffmpeg concat demuxer needs a final file entry without duration
+            if frame_paths:
+                f.write(f"file '{frame_paths[-1][0]}'\n")
+
+        # ── encode to mp4 via ffmpeg ──────────────────────────────────────
+        cmd = [
+            "ffmpeg", "-y",
+            "-f", "concat", "-safe", "0", "-i", str(concat_txt),
+            "-vf", f"scale={width}:{height}",
+            "-c:v", "libx264", "-crf", "18", "-preset", "fast",
+            "-pix_fmt", "yuv420p",
+            "-r", str(fps),
+            str(output_path),
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg typewriter encode failed:\n{result.stderr[-2000:]}")
+
     return output_path
 
 

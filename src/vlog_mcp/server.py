@@ -419,8 +419,15 @@ class CodeSnapshotInput(BaseModel):
     code: str = Field(..., description="Source code text to render")
     lang: str = Field(default="python", description="Programming language for syntax highlighting")
     start_line: int = Field(default=1, ge=1, description="First line number to display")
-    highlight_lines: Optional[List[int]] = Field(
-        default=None, description="Line numbers to highlight with a background")
+    highlight_lines: Optional[List[Any]] = Field(
+        default=None,
+        description=(
+            "Lines to highlight. Two formats accepted:\n"
+            "  • List[int]  — highlight those lines with default yellow-tint background\n"
+            "  • List[dict] — each dict: {\"line\": N, \"bg\": \"#hexcolor\", \"fg\": \"#hexcolor\"}\n"
+            "    'bg' sets highlight background color; 'fg' overrides all text on that line.\n"
+            "Example: [1, {\"line\": 3, \"bg\": \"#1e3a2f\", \"fg\": \"#4ade80\"}, 7]"
+        ))
     title: Optional[str] = Field(default=None, description="Optional title shown in metadata")
 
 
@@ -450,6 +457,67 @@ async def vlog_code_snapshot(params: CodeSnapshotInput) -> str:
                       metadata={"lang": params.lang, "title": params.title or ""})
         _store.add_asset(params.project_id, asset)
         return json.dumps({"ok": True, "asset_id": asset_id, "path": str(out_path)})
+    except Exception as exc:
+        return _err(str(exc))
+
+
+class CodeTypewriterInput(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    project_id: str = Field(..., description="Target project ID")
+    code: str = Field(..., description="Source code to animate character by character")
+    lang: str = Field(default="python", description="Language for syntax highlighting")
+    chars_per_second: float = Field(
+        default=30.0, ge=1.0, le=500.0,
+        description="How many characters are revealed per second. 30 = natural typing speed.")
+    cursor: bool = Field(
+        default=True,
+        description="Show a blinking block cursor at the insertion point")
+    fps: int = Field(default=30, ge=12, le=60, description="Video frame rate")
+
+
+@mcp.tool(
+    name="vlog_code_typewriter",
+    annotations={"title": "Code Typewriter", "readOnlyHint": False,
+                 "destructiveHint": False, "idempotentHint": False}
+)
+async def vlog_code_typewriter(params: CodeTypewriterInput) -> str:
+    """
+    Generate a video (MP4) of code appearing character by character — typewriter effect.
+
+    The resulting clip can be added to the timeline as a background clip via
+    vlog_timeline_add_clip.  Syntax highlighting uses Monokai dark theme.
+
+    Returns:
+        JSON: { ok, asset_id, path, duration_seconds }
+    """
+    try:
+        asset_id = new_id("ast")
+        filename = f"code_typewriter_{asset_id}.mp4"
+        out_path = _project_dir(params.project_id) / "generated" / filename
+        asset_gen.code_typewriter(
+            out_path, params.code, params.lang,
+            chars_per_second=params.chars_per_second,
+            cursor=params.cursor,
+            fps=params.fps,
+        )
+        total_chars = len(params.code)
+        duration = total_chars / params.chars_per_second + 1.0  # +1s pause at end
+        asset = Asset(
+            asset_id=asset_id, kind="code_typewriter",
+            path=f"generated/{filename}", created_at=now_ts(),
+            metadata={
+                "lang": params.lang,
+                "chars_per_second": params.chars_per_second,
+                "duration": round(duration, 2),
+            },
+        )
+        _store.add_asset(params.project_id, asset)
+        return json.dumps({
+            "ok": True,
+            "asset_id": asset_id,
+            "path": str(out_path),
+            "duration_seconds": round(duration, 2),
+        })
     except Exception as exc:
         return _err(str(exc))
 
